@@ -18,6 +18,8 @@ docker-compose up -d
 
 All necessary setup will be done automatically by Docker.
 
+A sample web view is provided using Flask, to simply keep the main container alive. Going to `localhost` will simply give you an index page.
+
 Now open 2 different terminals, for spawning both the producer and the consumer
 
 You need to connect to the `app` docker container from both the terminals:

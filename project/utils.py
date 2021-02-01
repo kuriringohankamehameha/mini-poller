@@ -1,6 +1,7 @@
 import logging
 import logging.handlers
 import os
+import types
 
 
 def add_newlines(self: logging.Logger, num_newlines=1) -> None:

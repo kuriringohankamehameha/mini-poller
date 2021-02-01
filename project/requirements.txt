@@ -1,4 +1,6 @@
+flask
+gunicorn
+requests
+pymongo
 asyncio
 pika
-pymongo
-requests
