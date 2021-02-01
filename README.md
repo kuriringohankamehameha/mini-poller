@@ -23,7 +23,7 @@ Now open 2 different terminals, for spawning both the producer and the consumer
 You need to connect to the `app` docker container from both the terminals:
 
 ```bash
-docker exec -it mini_poller_app_1 /bin/bash # On both terminal 1 and terminal 2
+docker exec -it mini-poller_app_1 /bin/bash # On both terminal 1 and terminal 2
 ```
 
 On the first terminal, start the consumer:
