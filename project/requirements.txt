@@ -1,0 +1,7 @@
+flask
+gunicorn
+requests
+pymongo
+asyncio
+kafka
+kq
