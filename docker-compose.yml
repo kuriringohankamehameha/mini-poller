@@ -30,7 +30,7 @@ services:
         - "./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf" # We need to allow a loopback user (guest) to access even outside localhost
       command: bash -c "sleep 10; rabbitmq-server;" # Sleep for a couple of seconds before setting up RabbitMQ
 
-  poller:
+  app:
     build: "project/"
     env_file:
       - "config/mongo.env"
