@@ -30,15 +30,17 @@ On the first terminal, start the consumer:
 
 ```bash
 cd /usr/src/app
-python poll_service.py
+python poll_consumer.py
 ```
 
 On the second terminal, start the core service:
 
 ```bash
 cd /usr/src/app
-python poll_consumer.py
+python poll_service.py
 ```
+
+Notice that I start the consumer first, so that it is ready for any published messages from the poll service.
 
 Immediately, you'll start observing the polling changes in action!
 
