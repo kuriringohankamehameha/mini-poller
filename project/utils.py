@@ -1,9 +1,6 @@
 import logging
 import logging.handlers
 import os
-import re
-import types
-from functools import wraps
 
 
 def add_newlines(self: logging.Logger, num_newlines=1) -> None:

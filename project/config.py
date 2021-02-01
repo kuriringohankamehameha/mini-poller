@@ -5,4 +5,4 @@ API_URLS = [
 ]
 
 # Polling interval (seconds)
-POLL_INTERVAL = 10
+POLL_INTERVAL = 5

@@ -13,10 +13,12 @@ class MongoClient():
         self.client = pymongo.MongoClient(url, port=port)
         self.db = None
         self.codec_options = None
+        self.db_name = None
     
 
     def connect(self, db_name):
         self.db = getattr(self.client, db_name)
+        self.db_name = db_name
     
 
     def set_codec_options(self, codec_options):
