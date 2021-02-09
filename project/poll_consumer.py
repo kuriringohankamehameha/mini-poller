@@ -15,9 +15,9 @@ DB_USER = os.environ.get('DB_USER', 'tester')
 DB_PASSWORD = os.environ.get('DB_PASSWORD', 'tester')
 DB_NAME = os.environ.get('DB_NAME', 'test')
 DB_PORT = os.environ.get('DB_PORT', '27017')
-SERVER_URL = os.environ.get('SERVER_URL', '127.0.0.1')
+SERVER_URL = os.environ.get('SERVER_URL', '192.168.2.15')
 
-BROKER_URL = os.getenv('RABBITMQ_BROKER_HOST', '127.0.0.1')
+BROKER_URL = os.getenv('RABBITMQ_BROKER_HOST', '192.168.2.15')
 
 UDP_IP = '127.0.0.1'
 UDP_PORT = 8081
@@ -27,7 +27,7 @@ credentials, connection, channel, db_client, sock = None, None, None, None, None
 def perform_setup():
     global credentials, connection, channel, db_client, sock
     credentials = pika.PlainCredentials('guest', 'guest')
-    connection = pika.BlockingConnection(pika.ConnectionParameters("127.0.0.1", 5672, '/', credentials)) # Using rabbit-mq hostname instead of RABBITMQ_BROKER_HOST env
+    connection = pika.BlockingConnection(pika.ConnectionParameters("192.168.2.15", 5672, '/', credentials)) # Using rabbit-mq hostname instead of RABBITMQ_BROKER_HOST env
     channel = connection.channel()
     channel.queue_declare(queue='poll', durable=True)
 
@@ -62,8 +62,8 @@ def process_request(body):
         return
     
     record = {**content, 'created_on': datetime.datetime.now()}
-    # record_id = db_client.insert_record(db_client.db_name, record)
-    # logger.info(f"Inserted record: {record_id}")
+    record_id = db_client.insert_record(db_client.db_name, record)
+    logger.info(f"Inserted record: {record_id}")
     print(record)
     #sock.sendto(bytes(f"{record_id}", "utf-8"), (UDP_IP, UDP_PORT))
 
