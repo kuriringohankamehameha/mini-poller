@@ -33,7 +33,7 @@ def perform_setup():
     """
     global credentials, connection, channel
     credentials = pika.PlainCredentials('guest', 'guest') # AUTH via Default guest user on RabbitMQ
-    connection = pika.BlockingConnection(pika.ConnectionParameters("rabbit-mq", 5672, '/', credentials)) # Using rabbit-mq container name to access the RabbitMQ container from other containers
+    connection = pika.BlockingConnection(pika.ConnectionParameters("127.0.0.1", 5672, '/', credentials)) # Using rabbit-mq container name to access the RabbitMQ container from other containers
     channel = connection.channel()
     channel.queue_declare(queue='poll', durable=True)
 
@@ -63,6 +63,7 @@ async def poll_endpoint(url):
     Otherwise, we simply log the error during polling.
     """
     response = requests.get(url)
+    logger.info(f"PING Url: {url}")
     if response.status_code not in [200, 201]:
         # Failures in the polling itself are being discarded here, due to a simple design
         # You could, however, have a second message queue filled with failed poll requests

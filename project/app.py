@@ -5,10 +5,12 @@ import json
 import logging
 import os
 import random
+import socket
 import threading
 import time
 from string import ascii_lowercase
 
+import pymongo
 import requests
 from flask import Flask, Response, render_template, request
 
@@ -38,6 +40,28 @@ def _list():
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
+
+
+@app.route('/listall', methods=['GET'])
+def listall():
+    res = []
+    hostname = '127.0.0.1'
+    port = 27017
+    username = 'tester'
+    password = 'tester'
+    databaseName = 'test'
+
+    # connect with authentication
+    client = MongoClient(hostname, port)
+    db = client[databaseName]
+    db.authenticate(username, password)
+
+    collection = db['test']
+    cursor = collection.find({})
+    for document in cursor:
+        res.append(document)
+    
+    return json.dumps(res)
 
 
 if __name__ == '__main__':
