@@ -33,7 +33,7 @@ def perform_setup():
     """
     global credentials, connection, channel
     credentials = pika.PlainCredentials('guest', 'guest') # AUTH via Default guest user on RabbitMQ
-    connection = pika.BlockingConnection(pika.ConnectionParameters(BROKER_URL, 5672, '/', credentials))
+    connection = pika.BlockingConnection(pika.ConnectionParameters("rabbit-mq", 5672, '/', credentials)) # Using rabbit-mq container name to access the RabbitMQ container from other containers
     channel = connection.channel()
     channel.queue_declare(queue='poll', durable=True)
 

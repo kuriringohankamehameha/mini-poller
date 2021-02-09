@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import socket
 
 import pika
 import requests
@@ -18,12 +19,15 @@ SERVER_URL = os.environ.get('SERVER_URL', '127.0.0.1')
 
 BROKER_URL = os.getenv('RABBITMQ_BROKER_HOST', '127.0.0.1')
 
-credentials, connection, channel, db_client = None, None, None, None
+UDP_IP = '127.0.0.1'
+UDP_PORT = 8081
+
+credentials, connection, channel, db_client, sock = None, None, None, None, None
 
 def perform_setup():
-    global credentials, connection, channel, db_client
+    global credentials, connection, channel, db_client, sock
     credentials = pika.PlainCredentials('guest', 'guest')
-    connection = pika.BlockingConnection(pika.ConnectionParameters(BROKER_URL, 5672, '/', credentials))
+    connection = pika.BlockingConnection(pika.ConnectionParameters("rabbit-mq", 5672, '/', credentials)) # Using rabbit-mq hostname instead of RABBITMQ_BROKER_HOST env
     channel = connection.channel()
     channel.queue_declare(queue='poll', durable=True)
 
@@ -31,10 +35,18 @@ def perform_setup():
     db_client = MongoClient(f"mongodb://{DB_USER}:{DB_PASSWORD}@{SERVER_URL}:{DB_PORT}/{DB_NAME}")
     db_client.connect(DB_NAME)
 
+    # UDP Socket setup
+    # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
 
 def perform_teardown():
-    global credentials, connection, channel, db_client
+    global credentials, connection, channel, db_client, sock
     connection.close()
+    try:
+        #sock.close()
+        pass
+    except Exception as ex:
+        logger.critical(f"Exception when closing UDP socket: {ex}")
 
 
 def process_request(body):
@@ -51,7 +63,8 @@ def process_request(body):
     
     record = {**content, 'created_on': datetime.datetime.now()}
     record_id = db_client.insert_record(db_client.db_name, record)
-    print(f"Inserted record: {record_id}")
+    logger.info(f"Inserted record: {record_id}")
+    #sock.sendto(bytes(f"{record_id}", "utf-8"), (UDP_IP, UDP_PORT))
 
 
 def consume():
@@ -59,7 +72,8 @@ def consume():
     The Message Queue consumer, which continuously reads from the queue for any incoming messages
     """
     def callback(ch, method, properties, body):
-        logger.info(" [x] Received %r" % body)
+        # logger.info(" [x] Received %r" % body)
+        logger.info(" [x] Received message!")
         process_request(body) # byte encoded
 
     channel.basic_consume(queue='poll', auto_ack=True, on_message_callback=callback)
